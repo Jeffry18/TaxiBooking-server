@@ -1,4 +1,4 @@
-const Package = require("../models/Package");
+const Package = require("../models/Package.js");
 
 const getPackages = async (req, res) => {
   try {

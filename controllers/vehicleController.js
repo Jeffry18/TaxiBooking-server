@@ -1,5 +1,5 @@
 // controllers/vehicleController.js
-const Vehicle = require("../models/vehicle");
+const Vehicle = require("../models/vehicle.js");
 
 const getVehicles = async (req, res) => {
   try {
