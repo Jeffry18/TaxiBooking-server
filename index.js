@@ -19,12 +19,25 @@ require("./database/dbConnection")
 const taxiServer = express()
 
 // Update CORS configuration
+const allowedOrigins = [
+  "http://localhost:5000",
+  "https://taxi-booking-i4aorbjhk-jeffry-ronys-projects.vercel.app"
+];
+
 taxiServer.use(cors({
-  origin: "http://localhost:5173",
+  origin: function (origin, callback) {
+    // allow requests with no origin (like Postman or curl)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
-}))
+}));
+
 taxiServer.use(express.json())
 
 
