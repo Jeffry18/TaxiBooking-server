@@ -5,6 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
 
+
 // Routes
 const driverRoutes = require("./routes/driverRoutes")
 const userRoutes = require('./routes/router')
@@ -12,6 +13,7 @@ const vehicleRoutes = require('./routes/vehicleRoutes')
 const packageRoutes = require('./routes/packageRoutes')
 const bookingRoutes = require('./routes/bookingRoutes')
 const tripRoutes = require('./routes/tripRoutes')
+const placesRoutes = require('./routes/places')
 
 // Connect DB
 require("./database/dbConnection")
@@ -65,6 +67,7 @@ taxiServer.use("/packages", packageRoutes)
 taxiServer.use("/bookings", bookingRoutes)
 taxiServer.use("/drivers", driverRoutes)
 taxiServer.use("/trips", tripRoutes)
+taxiServer.use("/places", placesRoutes)
 
 // Error handling middleware
 taxiServer.use((req, res) => {
