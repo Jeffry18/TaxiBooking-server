@@ -13,16 +13,21 @@ exports.getBookings = async (req, res) => {
 // Add a new booking
 exports.addBooking = async (req, res) => {
   try {
-    // Validate required fields
-    const requiredFields = [
-      "vehicle",
-      "pickup",
-      "drop",
-      "date",
-      "time",
-      "passengerCount",
-    ];
+    const { vehicle, pickup, drop, date, returnDate, time, passengerCount, tripType, airportTripType } = req.body;
+
+    // Basic required fields
+    const requiredFields = ["vehicle", "pickup", "drop", "date", "time", "passengerCount", "tripType"];
     const missingFields = requiredFields.filter((field) => !req.body[field]);
+
+    // Round trip requires returnDate
+    if (tripType === "round" && !returnDate) {
+      missingFields.push("returnDate");
+    }
+
+    // Airport trip requires airportTripType
+    if (tripType === "airport" && !airportTripType) {
+      missingFields.push("airportTripType");
+    }
 
     if (missingFields.length > 0) {
       return res.status(400).json({
@@ -31,8 +36,15 @@ exports.addBooking = async (req, res) => {
     }
 
     const newBooking = new Booking({
-      ...req.body,
-      passengerCount: parseInt(req.body.passengerCount),
+      vehicle,
+      pickup,
+      drop,
+      date,
+      returnDate: tripType === "round" ? returnDate : null,
+      time,
+      passengerCount: parseInt(passengerCount),
+      tripType,
+      airportTripType: tripType === "airport" ? airportTripType : null,
     });
 
     const savedBooking = await newBooking.save();
@@ -43,6 +55,7 @@ exports.addBooking = async (req, res) => {
     });
   }
 };
+
 
 // Update booking status
 exports.updateBooking = async (req, res) => {

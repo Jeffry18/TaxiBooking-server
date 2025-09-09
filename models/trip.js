@@ -1,4 +1,5 @@
 // models/trip.js
+const e = require("express");
 const mongoose = require("mongoose");
 
 const tripSchema = new mongoose.Schema({
@@ -94,3 +95,4 @@ tripSchema.pre('save', function(next) {
 });
 
 module.exports = mongoose.model("Trip", tripSchema);
+

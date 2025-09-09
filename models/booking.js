@@ -10,8 +10,18 @@ const bookingSchema = new mongoose.Schema(
     pickup: { type: String, required: true },
     drop: { type: String, required: true },
     date: { type: String, required: true },
+    returnDate: { type: String },
     time: { type: String, required: true },
-    passengerCount: { type: Number, required: true }, // Add this field
+    passengerCount: { type: Number, required: true },
+    tripType: {
+      type: String,
+      enum: ["oneway", "round", "local", "airport"],
+      required: true,
+    },
+    airportTripType: {
+      type: String,
+      enum: ["pickup", "drop"], // optional
+    },
     status: {
       type: String,
       enum: ["pending", "confirmed", "completed", "cancelled"],
@@ -20,5 +30,6 @@ const bookingSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
 
 module.exports = mongoose.model("Booking", bookingSchema);
