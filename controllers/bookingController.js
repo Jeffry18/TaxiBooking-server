@@ -1,4 +1,5 @@
 const Booking = require("../models/booking");
+const Vehicle = require("../models/vehicle");
 
 // Get all bookings
 exports.getBookings = async (req, res) => {
@@ -80,5 +81,41 @@ exports.deleteBooking = async (req, res) => {
     res.json({ message: "Booking deleted" });
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+};
+
+// 🔹 Get 5 most recent bookings for logged-in user
+exports.getRecentBookings = async (req, res) => {
+  try {
+    const userId = req.userId;
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const bookings = await Booking.find({ user: userId })
+      .populate("vehicle") // populate vehicle details
+      .sort({ createdAt: -1 })
+      .limit(5);
+
+    // format response
+    const formatted = bookings.map(b => ({
+      _id: b._id,
+      pickup: b.pickup,
+      drop: b.drop,
+      date: b.date,
+      returnDate: b.returnDate,
+      time: b.time,
+      passengerCount: b.passengerCount,
+      tripType: b.tripType,
+      airportTripType: b.airportTripType,
+      status: b.status,
+      vehicleName: b.vehicle?.model || "",
+      vehicleType: b.vehicle?.type || "",
+    }));
+
+    res.json(formatted);
+  } catch (error) {
+    console.error("Error fetching recent bookings:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };
