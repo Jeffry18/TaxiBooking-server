@@ -14,13 +14,9 @@ const createPackage = async (req, res) => {
     // Copy other fields from body
     const packageData = { ...req.body };
 
-    // If multiple images uploaded (req.files from multer)
-    if (req.files && req.files.length > 0) {
-      packageData.images = req.files.map(file => file.filename); // store array of filenames
-      console.log("Uploaded package images:", packageData.images);
-    } else {
-      packageData.images = [];
-      console.log("No package images uploaded");
+    // Single image (req.file from multer)
+    if (req.file) {
+      packageData.image = req.file.filename;
     }
 
     const pkg = new Package(packageData);

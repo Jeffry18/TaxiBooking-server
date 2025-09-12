@@ -5,7 +5,7 @@ const vehicleSchema = new mongoose.Schema({
   number: { type: String, required: true, unique: true }, // registration number
   type: { type: String, required: true },
   capacity: { type: Number, required: true },
-  fare: { type: Number, required: true }, // ✅ added fare field
+  contactNumber: { type: String, required: true },
   imageUrl: { type: String },
   driver: { type: mongoose.Schema.Types.ObjectId, ref: "Driver" },
   status: {
