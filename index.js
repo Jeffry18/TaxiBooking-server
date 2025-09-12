@@ -14,6 +14,9 @@ const packageRoutes = require('./routes/packageRoutes')
 const bookingRoutes = require('./routes/bookingRoutes')
 const tripRoutes = require('./routes/tripRoutes')
 const placesRoutes = require('./routes/places')
+const cabTypeRoutes = require("./routes/cabTypeRoutes");
+
+
 
 // Connect DB
 require("./database/dbConnection")
@@ -68,6 +71,8 @@ taxiServer.use("/bookings", bookingRoutes)
 taxiServer.use("/drivers", driverRoutes)
 taxiServer.use("/trips", tripRoutes)
 taxiServer.use("/places", placesRoutes)
+taxiServer.use("/cabtypes", cabTypeRoutes);
+
 
 // Error handling middleware
 taxiServer.use((req, res) => {
@@ -78,3 +83,5 @@ const PORT = process.env.PORT || 5000
 taxiServer.listen(PORT, () => {
   console.log(`🚀 Taxi server is running at http://localhost:${PORT}`)
 })
+
+

@@ -11,23 +11,25 @@ const getPackages = async (req, res) => {
 
 const createPackage = async (req, res) => {
   try {
-    // Handle file upload - multer adds file info to req.file
+    // Copy other fields from body
     const packageData = { ...req.body };
-    if (req.file) {
-      packageData.image = req.file.filename; // Store just the filename
-      console.log('Package image uploaded successfully, filename:', req.file.filename);
+
+    // If multiple images uploaded (req.files from multer)
+    if (req.files && req.files.length > 0) {
+      packageData.images = req.files.map(file => file.filename); // store array of filenames
+      console.log("Uploaded package images:", packageData.images);
     } else {
-      console.log('No package image uploaded');
+      packageData.images = [];
+      console.log("No package images uploaded");
     }
-    
-    console.log('Final package data to save:', packageData);
-    
+
     const pkg = new Package(packageData);
     await pkg.save();
-    console.log('Package saved successfully:', pkg);
+    console.log("Package saved successfully:", pkg);
+
     res.status(201).json(pkg);
   } catch (err) {
-    console.error('Error creating package:', err);
+    console.error("Error creating package:", err);
     res.status(400).json({ message: "Error creating package", error: err.message });
   }
 };
