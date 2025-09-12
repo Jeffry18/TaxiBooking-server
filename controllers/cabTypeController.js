@@ -18,23 +18,16 @@ const createCabType = async (req, res) => {
     const cabData = { ...req.body };
 
 
-    if (req.files && req.files.length > 0) {
-          cabData.images = req.files.map(file => file.filename); // store array of filenames
-          console.log("Uploaded cab images:", cabData.images);
-        } else {
-          cabData.images = [];
-          console.log("No cab images uploaded");
-        }
-    
-        const cab = new CabType(cabData);
-        await cab.save();
-        console.log("cabtype saved successfully:", cab);
-    
-        res.status(201).json(cab);
-      } catch (err) {
-        console.error("Error creating cab:", err);
-        res.status(400).json({ message: "Error creating cab", error: err.message });
-      }
+    if (req.file) {
+      cabData.image = req.file.filename; // store uploaded image filename
+    }
+
+    const cabType = new CabType(cabData);
+    await cabType.save();
+    res.status(201).json(cabType);
+  } catch (err) {
+    res.status(400).json({ message: "Error creating cab type", error: err.message });
+  }
 };
 
 // Update cab type
