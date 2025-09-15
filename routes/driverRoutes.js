@@ -1,29 +1,71 @@
 const express = require("express");
 const router = express.Router();
-const multer = require("multer");
-const path = require("path");
-const {
-  getDrivers,
-  createDriver,
-  updateDriver
-} = require("../controllers/driverController");
+const Driver = require("../models/driver"); // import your Driver model
+const upload = require("../middlewares/multterMiddleware");
 
-// Multer storage (reusing your setup)
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "../uploads"));
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
+// ✅ GET all drivers
+router.get("/", async (req, res) => {
+  try {
+    const drivers = await Driver.find();
+    res.status(200).json(drivers);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
   }
 });
 
-const upload = multer({ storage });
+// ✅ POST new driver with image
+router.post("/", upload.single("image"), async (req, res) => {
+  try {
+    const driverData = {
+      ...req.body,
+      imageUrl: req.file ? req.file.filename : null, // save filename
+    };
 
-// Use Multer in POST route
-router.get("/", getDrivers);
-router.post("/", upload.single("image"), createDriver); // 👈 handles file upload
-router.patch("/:id", updateDriver);
+    const driver = new Driver(driverData);
+    await driver.save();
+
+    res.status(201).json(driver);
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// ✅ PATCH (update driver)
+router.patch("/:id", async (req, res) => {
+  try {
+    const driver = await Driver.findByIdAndUpdate(
+      req.params.id,
+      { $set: req.body },
+      { new: true, runValidators: true }
+    );
+
+    if (!driver) {
+      return res.status(404).json({ message: "Driver not found" });
+    }
+
+    res.status(200).json(driver);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ✅ DELETE driver
+router.delete("/:id", async (req, res) => {
+  try {
+    const driver = await Driver.findByIdAndDelete(req.params.id);
+
+    if (!driver) {
+      return res.status(404).json({ message: "Driver not found" });
+    }
+
+    res.status(200).json({ message: "Driver deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
 
 module.exports = router;
