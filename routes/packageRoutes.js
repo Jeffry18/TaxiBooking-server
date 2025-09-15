@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Package = require("../models/Package"); // ✅ import your Package model
+const Package = require("../models/package"); // ✅ import your Package model
 const upload = require("../middlewares/multterMiddleware");
 
 // ✅ GET all packages

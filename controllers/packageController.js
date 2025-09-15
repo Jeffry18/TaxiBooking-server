@@ -1,4 +1,4 @@
-const Package = require("../models/package.js");
+const Package = require("../models/package");
 
 const getPackages = async (req, res) => {
   try {
@@ -11,21 +11,23 @@ const getPackages = async (req, res) => {
 
 const createPackage = async (req, res) => {
   try {
-    // Copy other fields from body
+    // Handle file upload - multer adds file info to req.file
     const packageData = { ...req.body };
-
-    // Single image (req.file from multer)
     if (req.file) {
-      packageData.image = req.file.filename;
+      packageData.image = req.file.filename; // Store just the filename
+      console.log('Package image uploaded successfully, filename:', req.file.filename);
+    } else {
+      console.log('No package image uploaded');
     }
-
+    
+    console.log('Final package data to save:', packageData);
+    
     const pkg = new Package(packageData);
     await pkg.save();
-    console.log("Package saved successfully:", pkg);
-
+    console.log('Package saved successfully:', pkg);
     res.status(201).json(pkg);
   } catch (err) {
-    console.error("Error creating package:", err);
+    console.error('Error creating package:', err);
     res.status(400).json({ message: "Error creating package", error: err.message });
   }
 };
