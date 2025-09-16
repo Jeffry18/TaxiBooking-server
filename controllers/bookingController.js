@@ -1,34 +1,51 @@
 const Booking = require("../models/booking");
-const Vehicle = require("../models/vehicle");
 
-// Get all bookings
+
+// Get bookings
 exports.getBookings = async (req, res) => {
   try {
-    const bookings = await Booking.find().populate("vehicle");
+    if (!req.userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    let query = {};
+    if (req.role !== "admin") {
+      // Normal users only see their own bookings
+      query.user = req.userId;
+    }
+
+    const bookings = await Booking.find(query).populate("cabType");
     res.json(bookings);
   } catch (err) {
+    console.error("Error in getBookings:", err);
     res.status(500).json({ message: err.message });
   }
 };
 
+
+
 // Add a new booking
 exports.addBooking = async (req, res) => {
   try {
-    const { vehicle, pickup, drop, date, returnDate, time, passengerCount, tripType, airportTripType } = req.body;
+    const { cabType, pickup, drop, date, returnDate, time, passengerCount, extraStops } = req.body;
 
     // Basic required fields
-    const requiredFields = ["vehicle", "pickup", "drop", "date", "time", "passengerCount", "tripType"];
+    const requiredFields = ["pickup", "drop", "date", "time", "passengerCount"];
+    // cabType is now required
+    if (!cabType) {
+      requiredFields.push("cabType");
+    }
     const missingFields = requiredFields.filter((field) => !req.body[field]);
 
     // Round trip requires returnDate
-    if (tripType === "round" && !returnDate) {
-      missingFields.push("returnDate");
-    }
+    // if (tripType === "round" && !returnDate) {
+    //   missingFields.push("returnDate");
+    // }
 
     // Airport trip requires airportTripType
-    if (tripType === "airport" && !airportTripType) {
-      missingFields.push("airportTripType");
-    }
+    // if (tripType === "airport" && !airportTripType) {
+    //   missingFields.push("airportTripType");
+    // }
 
     if (missingFields.length > 0) {
       return res.status(400).json({
@@ -36,19 +53,38 @@ exports.addBooking = async (req, res) => {
       });
     }
 
+    // ✅ userId comes from middleware
+    const userId = req.userId;
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized - no userId" });
+    }
+    console.log("reached here");
+
+    console.log("req.userid",req.user);
+    
+    
     const newBooking = new Booking({
-      vehicle,
+      cabType,
       pickup,
       drop,
       date,
-      returnDate: tripType === "round" ? returnDate : null,
+      returnDate,
       time,
       passengerCount: parseInt(passengerCount),
-      tripType,
-      airportTripType: tripType === "airport" ? airportTripType : null,
+      // tripType,
+      //airportTripType: tripType === "airport" ? airportTripType : null,
+      extraStops: extraStops || [] ,
+      user: userId,
     });
 
+    console.log("New Booking:", newBooking);
+    
+    
+
     const savedBooking = await newBooking.save();
+
+    console.log("done");
+    
     res.status(201).json(savedBooking);
   } catch (err) {
     res.status(400).json({
@@ -93,7 +129,7 @@ exports.getRecentBookings = async (req, res) => {
     }
 
     const bookings = await Booking.find({ user: userId })
-      .populate("vehicle") // populate vehicle details
+      .populate("cabType")
       .sort({ createdAt: -1 })
       .limit(5);
 
@@ -106,11 +142,11 @@ exports.getRecentBookings = async (req, res) => {
       returnDate: b.returnDate,
       time: b.time,
       passengerCount: b.passengerCount,
-      tripType: b.tripType,
-      airportTripType: b.airportTripType,
+      //tripType: b.tripType,
+      //airportTripType: b.airportTripType,
       status: b.status,
-      vehicleName: b.vehicle?.model || "",
-      vehicleType: b.vehicle?.type || "",
+      vehicleName: b.cabType?.name || "",
+      vehicleType: "Cab Type",
     }));
 
     res.json(formatted);

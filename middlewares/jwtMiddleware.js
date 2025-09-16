@@ -13,16 +13,16 @@ const jwtMiddleware = (req, res, next) => {
             const jwtResponse = jwt.verify(token, process.env.JWTPASSWORD)
             console.log(jwtResponse);
             req.userId = jwtResponse.userId
+            req.role = jwtResponse.role
+            return next(); // ✅ Add return here
         } catch (error) {
-            res.status(401).json("authorisation failed.. please login..!!")
+            return res.status(401).json("authorisation failed.. please login..!!")
         }
-
-
     } else {
-        res.status(404).json("Authorisation Failed.. token is missing...!!")
+        return res.status(404).json("Authorisation Failed.. token is missing...!!")
     }
-
-    next()
+    console.log("exit middleware");
+    
 }
 
 module.exports = jwtMiddleware

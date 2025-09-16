@@ -5,6 +5,11 @@ const bookingSchema = new mongoose.Schema(
     vehicle: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Vehicle",
+      required: false,
+    },
+    cabType: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "CabType",
       required: true,
     },
     pickup: { type: String, required: true },
@@ -13,15 +18,15 @@ const bookingSchema = new mongoose.Schema(
     returnDate: { type: String },
     time: { type: String, required: true },
     passengerCount: { type: Number, required: true },
-    tripType: {
-      type: String,
-      enum: ["oneway", "round", "local", "airport"],
-      required: true,
-    },
-    airportTripType: {
-      type: String,
-      enum: ["pickup", "drop"], // optional
-    },
+    // tripType: {
+    //   type: String,
+    //   enum: ["oneway", "round", "local", "airport"],
+    //   required: false,
+    // },
+    // airportTripType: {
+    //   type: String,
+    //   enum: ["pickup", "drop"], // optional
+    // },
     status: {
       type: String,
       enum: ["pending", "confirmed", "completed", "cancelled"],
@@ -32,6 +37,7 @@ const bookingSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    extraStops: [{ type: String }],
 
   },
   { timestamps: true }
