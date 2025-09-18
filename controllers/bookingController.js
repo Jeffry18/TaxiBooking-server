@@ -1,4 +1,5 @@
 const Booking = require("../models/booking");
+const User = require("../models/userModel");
 
 
 // Get bookings
@@ -62,8 +63,14 @@ exports.addBooking = async (req, res) => {
 
     console.log("req.userid",req.user);
     
+     // ✅ fetch user details
+    const user = await User.findById(userId).select("username");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
     
     const newBooking = new Booking({
+      username: user.username,
       cabType,
       pickup,
       drop,

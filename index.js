@@ -15,6 +15,8 @@ const bookingRoutes = require('./routes/bookingRoutes')
 const tripRoutes = require('./routes/tripRoutes')
 const placesRoutes = require('./routes/places')
 const cabTypeRoutes = require("./routes/cabTypeRoutes");
+const cabVehicleRoutes = require("./routes/cabVehicleRoutes");
+const stateRoutes = require("./routes/stateRoutes")
 
 
 
@@ -72,6 +74,9 @@ taxiServer.use("/drivers", driverRoutes)
 taxiServer.use("/trips", tripRoutes)
 taxiServer.use("/places", placesRoutes)
 taxiServer.use("/cabtypes", cabTypeRoutes);
+taxiServer.use("/cabvehicles", cabVehicleRoutes);
+taxiServer.use("/states",stateRoutes)
+
 
 
 // Error handling middleware
