@@ -35,6 +35,19 @@ const getStates = async (req, res) => {
   }
 };
 
+// Get single state by id
+const getStateById = async (req, res) => {
+  try {
+    const state = await State.findById(req.params.id);
+    if (!state) {
+      return res.status(404).json({ message: "State not found" });
+    }
+    res.json(state);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching state", error: err.message });
+  }
+};
+
 // Delete a state by ID
 const deleteState = async (req, res) => {
   try {
@@ -64,5 +77,6 @@ const deleteState = async (req, res) => {
 module.exports = {
   addState,
   getStates,
+  getStateById,
   deleteState,
 };

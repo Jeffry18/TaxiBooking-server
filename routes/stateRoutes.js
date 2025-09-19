@@ -9,6 +9,8 @@ router.post("/", upload.single("image"), stateController.addState);
 // Get all states
 router.get("/", stateController.getStates);
 
+router.get("/:id", stateController.getStateById); 
+
 // Delete a state
 router.delete("/:id", stateController.deleteState);
 
