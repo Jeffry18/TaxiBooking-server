@@ -17,6 +17,8 @@ const placesRoutes = require('./routes/places')
 const cabTypeRoutes = require("./routes/cabTypeRoutes");
 const cabVehicleRoutes = require("./routes/cabVehicleRoutes");
 const stateRoutes = require("./routes/stateRoutes")
+const cityRoutes = require("./routes/cityRoutes")
+const placeRoute = require("./routes/placeRoutes")
 
 
 
@@ -72,10 +74,12 @@ taxiServer.use("/packages", packageRoutes)
 taxiServer.use("/bookings", bookingRoutes)
 taxiServer.use("/drivers", driverRoutes)
 taxiServer.use("/trips", tripRoutes)
-taxiServer.use("/places", placesRoutes)
+taxiServer.use("/places", placesRoutes)//external api of places list in booking form
 taxiServer.use("/cabtypes", cabTypeRoutes);
 taxiServer.use("/cabvehicles", cabVehicleRoutes);
 taxiServer.use("/states",stateRoutes)
+taxiServer.use("/city", cityRoutes)
+taxiServer.use("/place", placeRoute)
 
 
 

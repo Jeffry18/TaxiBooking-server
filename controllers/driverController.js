@@ -66,10 +66,24 @@ exports.updateDriver = async (req, res) => {
 
 exports.deleteDriver = async (req, res) => {
   try {
-    const driver = await Driver.findByIdAndDelete(req.params.id)
-    if (!driver) return res.status(404).json({ error: "Driver not found" })
-    res.json({ message: "Driver deleted successfully" })
+    const driver = await Driver.findByIdAndDelete(req.params.id);
+    if (!driver) {
+      return res.status(404).json({ error: "Driver not found" });
+    }
+
+    // If driver has an image, delete it from uploads
+    if (driver.image) {
+      const imagePath = path.join(__dirname, "..", "uploads", driver.image);
+      fs.unlink(imagePath, (err) => {
+        if (err) {
+          console.error("Error deleting driver image:", err.message);
+        }
+      });
+    }
+
+    res.json({ message: "Driver deleted successfully" });
   } catch (err) {
-    res.status(500).json({ error: err.message })
+    console.error("Delete driver error:", err);
+    res.status(500).json({ error: "Server error" });
   }
-}
+};

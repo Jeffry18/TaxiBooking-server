@@ -1,91 +1,68 @@
 const State = require("../models/state");
 
-
-// Add a new State
-exports.addState = async (req, res) => {
+// Add a new state
+const addState = async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name, description } = req.body;
+    let image = null;
 
-    // Check if state already exists
-    const existing = await State.findOne({ name });
-    if (existing) {
-      return res.status(400).json({ error: "State already exists" });
+    if (req.file) {
+      image = req.file.filename; // multer saves filename
     }
 
-    const state = new State({ name, cities: [] });
-    await state.save();
+    const newState = new State({
+      name,
+      description,
+      image,
+    });
 
-    res.json({ message: "State added successfully", state });
+    await newState.save();
+    res.status(201).json(newState);
+  } catch (error) {
+    console.error("Error adding state:", error);
+    res.status(500).json({ message: "Error adding state", error: error.message });
+  }
+};
+
+// Get all states
+const getStates = async (req, res) => {
+  try {
+    const states = await State.find();
+    res.status(200).json(states);
+  } catch (error) {
+    console.error("Error fetching states:", error);
+    res.status(500).json({ message: "Error fetching states", error: error.message });
+  }
+};
+
+// Delete a state by ID
+const deleteState = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const state = await State.findByIdAndDelete(id);
+
+    if (!state) {
+      return res.status(404).json({ error: "State not found" });
+    }
+
+    // If state has an image, delete it from uploads folder
+    if (state.image) {
+      const imagePath = path.join(__dirname, "..", "uploads", state.image);
+      fs.unlink(imagePath, (err) => {
+        if (err) {
+          console.error("Error deleting image file:", err.message);
+        }
+      });
+    }
+
+    res.json({ message: "State deleted successfully" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-// Add a new City into a specific State
-exports.addCityToState = async (req, res) => {
-  try {
-    const { stateId } = req.params;
-    const { name } = req.body;
-
-    const state = await State.findById(stateId);
-    if (!state) return res.status(404).json({ error: "State not found" });
-
-    state.cities.push({ name, places: [] });
-    await state.save();
-
-    res.json({ message: "City added successfully", state });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-// Add a new Place into a specific City of a State
-exports.addPlaceToCity = async (req, res) => {
-  try {
-    const { stateId, cityId } = req.params;
-    const { name, description, rate } = req.body;
-    const image = req.file ? req.file.filename : null;
-
-    const state = await State.findById(stateId);
-    if (!state) return res.status(404).json({ error: "State not found" });
-
-    const city = state.cities.id(cityId);
-    if (!city) return res.status(404).json({ error: "City not found" });
-
-    city.places.push({ name, description, rate, image });
-    await state.save();
-
-    res.json({ message: "Place added successfully", city });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-// Get cities of a State
-exports.getCitiesByState = async (req, res) => {
-  try {
-    const { stateId } = req.params;
-    const state = await State.findById(stateId);
-    if (!state) return res.status(404).json({ error: "State not found" });
-
-    res.json(state.cities);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-// Get places of a City in a State
-exports.getPlacesByCity = async (req, res) => {
-  try {
-    const { stateId, cityId } = req.params;
-    const state = await State.findById(stateId);
-    if (!state) return res.status(404).json({ error: "State not found" });
-
-    const city = state.cities.id(cityId);
-    if (!city) return res.status(404).json({ error: "City not found" });
-
-    res.json(city.places);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+module.exports = {
+  addState,
+  getStates,
+  deleteState,
 };

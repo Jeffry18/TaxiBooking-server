@@ -39,9 +39,23 @@ const deletePackage = async (req, res) => {
     if (!deleted) {
       return res.status(404).json({ message: "Package not found" });
     }
+
+    // If the package has an image, remove it from /uploads
+    if (deleted.image) {
+      const imagePath = path.join(__dirname, "..", "uploads", deleted.image);
+      fs.unlink(imagePath, (err) => {
+        if (err) {
+          console.error("Error deleting package image:", err.message);
+        }
+      });
+    }
+
     return res.json({ message: "Package deleted successfully" });
   } catch (err) {
-    return res.status(500).json({ message: "Error deleting package", error: err.message });
+    console.error("Delete package error:", err);
+    return res
+      .status(500)
+      .json({ message: "Error deleting package", error: err.message });
   }
 };
 

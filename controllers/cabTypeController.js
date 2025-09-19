@@ -44,12 +44,27 @@ const createCabType = async (req, res) => {
 // Delete cab type
 const deleteCabType = async (req, res) => {
   try {
-    const deleted = await CabType.findByIdAndDelete(req.params.id);
-    if (!deleted){
-       return res.status(404).json({ message: "Cab type not found" });}
+    const cabType = await CabType.findByIdAndDelete(req.params.id);
+
+    if (!cabType) {
+      return res.status(404).json({ message: "Cab type not found" });
+    }
+
+    // If cab type has an image, delete it from uploads folder
+    if (cabType.image) {
+      const imagePath = path.join(__dirname, "..", "uploads", cabType.image);
+      fs.unlink(imagePath, (err) => {
+        if (err) {
+          console.error("Error deleting cab type image:", err.message);
+        }
+      });
+    }
+
     return res.json({ message: "Cab type deleted successfully" });
   } catch (err) {
-    return res.status(500).json({ message: "Error deleting cab type", error: err.message });
+    return res
+      .status(500)
+      .json({ message: "Error deleting cab type", error: err.message });
   }
 };
 
