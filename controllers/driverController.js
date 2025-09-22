@@ -1,4 +1,6 @@
 const Driver = require("../models/driver")
+const path = require("path");
+const fs = require("fs");
 
 exports.createDriver = async (req, res) => {
   try {

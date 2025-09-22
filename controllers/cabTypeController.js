@@ -1,4 +1,6 @@
 const CabType = require("../models/cabType");
+const path = require("path");
+const fs = require("fs");
 
 
 
@@ -31,15 +33,15 @@ const createCabType = async (req, res) => {
 };
 
 // Update cab type
-// const updateCabType = async (req, res) => {
-//   try {
-//     const updated = await CabType.findByIdAndUpdate(req.params.id, req.body, { new: true });
-//     if (!updated) return res.status(404).json({ message: "Cab type not found" });
-//     res.json(updated);
-//   } catch (err) {
-//     res.status(400).json({ message: "Error updating cab type", error: err.message });
-//   }
-// };
+const updateCabType = async (req, res) => {
+  try {
+    const updated = await CabType.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    if (!updated) return res.status(404).json({ message: "Cab type not found" });
+    res.json(updated);
+  } catch (err) {
+    res.status(400).json({ message: "Error updating cab type", error: err.message });
+  }
+};
 
 // Delete cab type
 const deleteCabType = async (req, res) => {
@@ -68,4 +70,4 @@ const deleteCabType = async (req, res) => {
   }
 };
 
-module.exports = { getCabTypes, createCabType, deleteCabType };
+module.exports = { getCabTypes, createCabType, updateCabType, deleteCabType };

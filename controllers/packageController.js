@@ -1,4 +1,6 @@
 const Package = require("../models/package");
+const path = require("path");
+const fs = require("fs");
 
 const getPackages = async (req, res) => {
   try {
@@ -6,6 +8,16 @@ const getPackages = async (req, res) => {
     res.json(packages);
   } catch (err) {
     res.status(500).json({ message: "Error fetching packages", error: err.message });
+  }
+};
+
+const getPackageById = async (req, res) => {
+  try {
+    const pkg = await Package.findById(req.params.id);
+    if (!pkg) return res.status(404).json({ error: "Package not found" });
+    res.json(pkg);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
 
@@ -29,6 +41,24 @@ const createPackage = async (req, res) => {
   } catch (err) {
     console.error('Error creating package:', err);
     res.status(400).json({ message: "Error creating package", error: err.message });
+  }
+};
+
+const updatePackage = async (req, res) => {
+  try {
+    const updatedPackage = await Package.findByIdAndUpdate(
+      req.params.id,
+      { $set: req.body },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedPackage) {
+      return res.status(404).json({ message: "Package not found" });
+    }
+
+    res.json(updatedPackage);
+  } catch (err) {
+    res.status(400).json({ message: "Error updating package", error: err.message });
   }
 };
 
@@ -59,4 +89,4 @@ const deletePackage = async (req, res) => {
   }
 };
 
-module.exports = { getPackages, createPackage, deletePackage };
+module.exports = { getPackages, getPackageById, createPackage, updatePackage, deletePackage };
