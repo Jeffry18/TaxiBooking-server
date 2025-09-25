@@ -38,15 +38,7 @@ exports.addBooking = async (req, res) => {
     }
     const missingFields = requiredFields.filter((field) => !req.body[field]);
 
-    // Round trip requires returnDate
-    // if (tripType === "round" && !returnDate) {
-    //   missingFields.push("returnDate");
-    // }
-
-    // Airport trip requires airportTripType
-    // if (tripType === "airport" && !airportTripType) {
-    //   missingFields.push("airportTripType");
-    // }
+    
 
     if (missingFields.length > 0) {
       return res.status(400).json({

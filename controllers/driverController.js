@@ -10,6 +10,9 @@ exports.createDriver = async (req, res) => {
     
     // Handle file upload - multer adds file info to req.file
     const driverData = { ...req.body };
+    if (req.userId) {
+      driverData.user = req.userId;
+    }
     if (req.file) {
       driverData.image = req.file.filename; // Store just the filename
       console.log('File uploaded successfully, filename:', req.file.filename);
@@ -31,7 +34,16 @@ exports.createDriver = async (req, res) => {
 
 exports.getDrivers = async (req, res) => {
   try {
-    const drivers = await Driver.find()
+    if (!req.userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    let query = {};
+    if (req.role !== "admin") {
+      query.user = req.userId;
+    }
+
+    const drivers = await Driver.find(query)
     res.json(drivers)
   } catch (err) {
     res.status(500).json({ message: err.message })
@@ -40,7 +52,16 @@ exports.getDrivers = async (req, res) => {
 
 exports.getDriverById = async (req, res) => {
   try {
-    const driver = await Driver.findById(req.params.id).populate("vehicles")
+    if (!req.userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    let query = { _id: req.params.id };
+    if (req.role !== "admin") {
+      query.user = req.userId;
+    }
+    
+    const driver = await Driver.findOne(query).populate("vehicles")
     if (!driver) return res.status(404).json({ error: "Driver not found" })
     res.json(driver)
   } catch (err) {
