@@ -10,26 +10,28 @@ const {
   deleteTrip,
   getTripsByStatus
 } = require("../controllers/tripController");
+const jwtMiddleware = require("../middlewares/jwtMiddleware");
+
 
 // Create a new trip booking
-router.post("/", createTrip);
+router.post("/",jwtMiddleware, createTrip);
 
 // Get all trip bookings
-router.get("/", getTrips);
+router.get("/", jwtMiddleware, getTrips);
 
 // Get trips by status
-router.get("/status/:status", getTripsByStatus);
+router.get("/status/:status", jwtMiddleware, getTripsByStatus);
 
 // Get trip by ID
-router.get("/:id", getTripById);
+router.get("/:id", jwtMiddleware, getTripById);
 
 // Update trip status
-router.patch("/:id/status", updateTripStatus);
+router.patch("/:id/status", jwtMiddleware, updateTripStatus);
 
 // Update trip details
-router.put("/:id", updateTrip);
+router.put("/:id", jwtMiddleware, updateTrip);
 
 // Delete trip
-router.delete("/:id", deleteTrip);
+router.delete("/:id", jwtMiddleware, deleteTrip);
 
 module.exports = router;
