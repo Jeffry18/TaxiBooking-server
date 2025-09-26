@@ -20,6 +20,7 @@ const stateRoutes = require("./routes/stateRoutes")
 const cityRoutes = require("./routes/cityRoutes")
 const placeRoute = require("./routes/placeRoutes")
 const tariffRoutes = require("./routes/tariffRoutes")
+const cityTariffRoutes = require("./routes/cityTariffRoutes")
 
 
 
@@ -82,6 +83,7 @@ taxiServer.use("/states",stateRoutes)
 taxiServer.use("/city", cityRoutes)
 taxiServer.use("/place", placeRoute)
 taxiServer.use("/tariff", tariffRoutes)
+taxiServer.use("/citytariff", cityTariffRoutes)
 
 
 
