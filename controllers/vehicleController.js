@@ -5,7 +5,16 @@ const fs = require("fs");
 
 const getVehicles = async (req, res) => {
   try {
-    const vehicles = await Vehicle.find().populate("driver");
+    if (!req.userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    let query = {};
+    if (req.role !== "admin") {
+      query.user = req.userId;
+    }
+
+    const vehicles = await Vehicle.find(query)
     res.json(vehicles);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -14,6 +23,13 @@ const getVehicles = async (req, res) => {
 
 const getVehicleById = async (req, res) => {
   try {
+    if (!req.userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    let query = { _id: req.params.id };
+    if (req.role !== "admin") {
+      query.user = req.userId;
+    }
     const vehicle = await Vehicle.findById(req.params.id).populate("driver");
     if (!vehicle) return res.status(404).json({ error: "Vehicle not found" });
     res.json(vehicle);
@@ -26,6 +42,9 @@ const addVehicle = async (req, res) => {
   try {
     // Handle file upload - multer adds file info to req.file
     const vehicleData = { ...req.body };
+    if (req.userId) {
+      vehicleData.user = req.userId;
+    }
     if (req.file) {
       vehicleData.imageUrl = req.file.filename; // Store just the filename
       console.log('File uploaded successfully, filename:', req.file.filename);
