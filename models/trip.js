@@ -42,17 +42,7 @@ const tripSchema = new mongoose.Schema({
     max: 8
   },
 
-  // Location Details
-  pickupLocation: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  dropLocation: {
-    type: String,
-    required: true,
-    trim: true
-  },
+
 
   // Package Information
   packageId: {

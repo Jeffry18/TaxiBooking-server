@@ -6,6 +6,10 @@ const packageSchema = new mongoose.Schema({
   description: { type: String },
   duration: { type: String },
   price: { type: Number, required: true },
+  cabtype: { type: String, required: true },
+  city: { type: String, required: true },
+  destination: { type: String, required: true },
+  month: { type: String, required: true },
   image: { type: String }
 }, {
   timestamps: true

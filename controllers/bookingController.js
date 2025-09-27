@@ -28,10 +28,10 @@ exports.getBookings = async (req, res) => {
 // Add a new booking
 exports.addBooking = async (req, res) => {
   try {
-    const { cabType, pickup, drop, date, returnDate, time, passengerCount, extraStops } = req.body;
+    const { cabType, pickup, drop, date, returnDate, time, passengerCount, extraStops,phoneNumber } = req.body;
 
     // Basic required fields
-    const requiredFields = ["pickup", "drop", "date", "time", "passengerCount"];
+    const requiredFields = ["pickup", "drop", "date", "time", "passengerCount","phoneNumber"];
     // cabType is now required
     if (!cabType) {
       requiredFields.push("cabType");
@@ -69,6 +69,7 @@ exports.addBooking = async (req, res) => {
       date,
       returnDate,
       time,
+      phoneNumber,
       passengerCount: parseInt(passengerCount),
       // tripType,
       //airportTripType: tripType === "airport" ? airportTripType : null,
@@ -141,8 +142,6 @@ exports.getRecentBookings = async (req, res) => {
       returnDate: b.returnDate,
       time: b.time,
       passengerCount: b.passengerCount,
-      //tripType: b.tripType,
-      //airportTripType: b.airportTripType,
       status: b.status,
       vehicleName: b.cabType?.name || "",
       vehicleType: "Cab Type",

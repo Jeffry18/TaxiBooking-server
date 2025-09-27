@@ -19,15 +19,7 @@ const bookingSchema = new mongoose.Schema(
     returnDate: { type: String },
     time: { type: String, required: true },
     passengerCount: { type: Number, required: true },
-    // tripType: {
-    //   type: String,
-    //   enum: ["oneway", "round", "local", "airport"],
-    //   required: false,
-    // },
-    // airportTripType: {
-    //   type: String,
-    //   enum: ["pickup", "drop"], // optional
-    // },
+    phoneNumber: { type: Number, required: true },
     status: {
       type: String,
       enum: ["pending", "confirmed", "completed", "cancelled"],
