@@ -19,7 +19,7 @@ const bookingSchema = new mongoose.Schema(
     returnDate: { type: String },
     time: { type: String, required: true },
     passengerCount: { type: Number, required: true },
-    phoneNumber: { type: Number, required: true },
+    phoneNumber: { type: String, required: true },
     status: {
       type: String,
       enum: ["pending", "confirmed", "completed", "cancelled"],

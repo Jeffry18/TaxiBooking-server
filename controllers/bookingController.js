@@ -1,6 +1,6 @@
 const Booking = require("../models/booking");
 const User = require("../models/userModel");
-
+const { sendWhatsAppMessage } = require("../controllers/whatsappController");
 
 // Get bookings
 exports.getBookings = async (req, res) => {
@@ -23,22 +23,35 @@ exports.getBookings = async (req, res) => {
   }
 };
 
-
-
 // Add a new booking
 exports.addBooking = async (req, res) => {
   try {
-    const { cabType, pickup, drop, date, returnDate, time, passengerCount, extraStops,phoneNumber } = req.body;
+    const {
+      cabType,
+      pickup,
+      drop,
+      date,
+      returnDate,
+      time,
+      passengerCount,
+      extraStops,
+      phoneNumber,
+    } = req.body;
 
     // Basic required fields
-    const requiredFields = ["pickup", "drop", "date", "time", "passengerCount","phoneNumber"];
+    const requiredFields = [
+      "pickup",
+      "drop",
+      "date",
+      "time",
+      "passengerCount",
+      "phoneNumber",
+    ];
     // cabType is now required
     if (!cabType) {
       requiredFields.push("cabType");
     }
     const missingFields = requiredFields.filter((field) => !req.body[field]);
-
-    
 
     if (missingFields.length > 0) {
       return res.status(400).json({
@@ -53,14 +66,14 @@ exports.addBooking = async (req, res) => {
     }
     console.log("reached here");
 
-    console.log("req.userid",req.user);
-    
-     // ✅ fetch user details
+    console.log("req.userid", req.user);
+
+    // ✅ fetch user details
     const user = await User.findById(userId).select("username");
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    
+
     const newBooking = new Booking({
       username: user.username,
       cabType,
@@ -73,18 +86,34 @@ exports.addBooking = async (req, res) => {
       passengerCount: parseInt(passengerCount),
       // tripType,
       //airportTripType: tripType === "airport" ? airportTripType : null,
-      extraStops: extraStops || [] ,
+      extraStops: extraStops || [],
       user: userId,
     });
 
     console.log("New Booking:", newBooking);
-    
-    
 
     const savedBooking = await newBooking.save();
 
+    // 🔹 Populate cabType so we can access its name
+    const populatedBooking = await Booking.findById(savedBooking._id).populate(
+      "cabType"
+    );
+
+    // 🔹 Send WhatsApp notification to admin automatically
+    sendWhatsAppMessage({
+      username: populatedBooking.username,
+      pickup: populatedBooking.pickup,
+      drop: populatedBooking.drop,
+      cabType: populatedBooking.cabType?.name || "N/A",
+      passengerCount: populatedBooking.passengerCount,
+      date: populatedBooking.date,
+      time: populatedBooking.time,
+      extraStops: populatedBooking.extraStops || [],
+      phoneNumber: populatedBooking.phoneNumber,
+    });
+
     console.log("done");
-    
+
     res.status(201).json(savedBooking);
   } catch (err) {
     res.status(400).json({
@@ -92,7 +121,6 @@ exports.addBooking = async (req, res) => {
     });
   }
 };
-
 
 // Update booking status
 exports.updateBooking = async (req, res) => {
@@ -134,7 +162,7 @@ exports.getRecentBookings = async (req, res) => {
       .limit(5);
 
     // format response
-    const formatted = bookings.map(b => ({
+    const formatted = bookings.map((b) => ({
       _id: b._id,
       pickup: b.pickup,
       drop: b.drop,
