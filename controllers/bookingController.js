@@ -60,22 +60,10 @@ exports.addBooking = async (req, res) => {
     }
 
     // ✅ userId comes from middleware
-    const userId = req.userId;
-    if (!userId) {
-      return res.status(401).json({ message: "Unauthorized - no userId" });
-    }
-    console.log("reached here");
-
-    console.log("req.userid", req.user);
-
-    // ✅ fetch user details
-    const user = await User.findById(userId).select("username");
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    
 
     const newBooking = new Booking({
-      username: user.username,
+      
       cabType,
       pickup,
       drop,
@@ -87,7 +75,7 @@ exports.addBooking = async (req, res) => {
       // tripType,
       //airportTripType: tripType === "airport" ? airportTripType : null,
       extraStops: extraStops || [],
-      user: userId,
+      
     });
 
     console.log("New Booking:", newBooking);
@@ -101,7 +89,7 @@ exports.addBooking = async (req, res) => {
 
     // 🔹 Send WhatsApp notification to admin automatically
     sendWhatsAppMessage({
-      username: populatedBooking.username,
+      username: populatedBooking.username || "N/A",
       pickup: populatedBooking.pickup,
       drop: populatedBooking.drop,
       cabType: populatedBooking.cabType?.name || "N/A",

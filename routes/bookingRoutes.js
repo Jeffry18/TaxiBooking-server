@@ -7,10 +7,10 @@ const jwtMiddleware = require("../middlewares/jwtMiddleware");
 router.get("/",jwtMiddleware, bookingController.getBookings);
 
 // 🔹 GET recent bookings of logged-in user
-router.get("/recent", jwtMiddleware, bookingController.getRecentBookings);
+//router.get("/recent", jwtMiddleware, bookingController.getRecentBookings);
 
 // POST new booking
-router.post("/",jwtMiddleware, bookingController.addBooking);
+router.post("/", bookingController.addBooking);
 
 // PATCH update booking
 router.patch("/:id",jwtMiddleware, bookingController.updateBooking);

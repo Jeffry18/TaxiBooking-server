@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const bookingSchema = new mongoose.Schema(
   {
-    username: { type: String, required: true },
+    username: { type: String, required: false },
     vehicle: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Vehicle",
@@ -28,7 +28,7 @@ const bookingSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      required: false,
     },
     extraStops: [{ type: String }],
 
