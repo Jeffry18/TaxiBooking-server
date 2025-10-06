@@ -98,4 +98,24 @@ taxiServer.listen(PORT, () => {
   console.log(`🚀 Taxi server is running at http://localhost:${PORT}`)
 })
 
+taxiServer.get("/webhook", (req, res) => {
+  const VERIFY_TOKEN = "my_verify_token";
+  const mode = req.query["hub.mode"];
+  const token = req.query["hub.verify_token"];
+  const challenge = req.query["hub.challenge"];
+
+  if (mode === "subscribe" && token === VERIFY_TOKEN) {
+    console.log("✅ Webhook verified!");
+    res.status(200).send(challenge);
+  } else {
+    res.sendStatus(403);
+  }
+});
+
+taxiServer.post("/webhook", (req, res) => {
+  console.log("📩 Incoming WhatsApp webhook:", JSON.stringify(req.body, null, 2));
+  res.sendStatus(200);
+});
+
+
 
