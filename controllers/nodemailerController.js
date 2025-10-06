@@ -8,6 +8,8 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+
+
 const sendBookingEmail = async (bookingData) => {
   try {
     const emailContent = `
