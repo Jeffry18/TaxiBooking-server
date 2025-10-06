@@ -97,11 +97,11 @@ exports.addBooking = async (req, res) => {
     });
 
     // Send email notification
-    // try {
-    //   await sendBookingEmail(req.body);
-    // } catch (emailError) {
-    //   console.error("Email notification failed:", emailError);
-    // }
+    try {
+      await sendBookingEmail(populatedBooking);
+    } catch (emailError) {
+      console.error("Email notification failed:", emailError);
+    }
 
     console.log("done");
 
