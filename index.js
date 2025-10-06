@@ -86,18 +86,6 @@ taxiServer.use("/place", placeRoute)
 taxiServer.use("/tariff", tariffRoutes)
 taxiServer.use("/citytariff", cityTariffRoutes)
 
-
-
-// Error handling middleware
-taxiServer.use((req, res) => {
-  res.status(404).json({ message: "Route not found" })
-})
-
-const PORT = process.env.PORT || 5000
-taxiServer.listen(PORT, () => {
-  console.log(`🚀 Taxi server is running at http://localhost:${PORT}`)
-})
-
 taxiServer.get("/webhook", (req, res) => {
   const VERIFY_TOKEN = "my_verify_token";
   const mode = req.query["hub.mode"];
@@ -116,6 +104,20 @@ taxiServer.post("/webhook", (req, res) => {
   console.log("📩 Incoming WhatsApp webhook:", JSON.stringify(req.body, null, 2));
   res.sendStatus(200);
 });
+
+
+
+// Error handling middleware
+taxiServer.use((req, res) => {
+  res.status(404).json({ message: "Route not found" })
+})
+
+const PORT = process.env.PORT || 5000
+taxiServer.listen(PORT, () => {
+  console.log(`🚀 Taxi server is running at http://localhost:${PORT}`)
+})
+
+
 
 
 
