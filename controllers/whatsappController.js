@@ -5,7 +5,7 @@ const WHATSAPP_API_URL =
   "https://graph.facebook.com/v22.0/740175009189460/messages";
 const WHATSAPP_TOKEN =
   "EAAQIPZBIMbX4BPkqaMCvDnOl3gfp3xikDIlraeaPj0Yfd1BML9aEG3QZB8wrnZC1zOBDLcECQSrd9HHZCZAJi1gBp02vmjAre1PjWsOg6ZB1hxBUDv4F1j3ozqoAbx8Qw8QhxTZAaqKgs0tNYMZB54X19n0QZCfy1mqk1myzFVNfwXJCdAuCC2qTbhuX3LOKi6Xh3WwZDZD"; // From Meta Business
-const ADMIN_PHONE = "918089074080"; // Admin’s number (with country code, no + sign)
+const ADMIN_PHONE = "919037456237"; // Admin’s number (with country code, no + sign)
 
 console.log("done");
 

@@ -71,21 +71,6 @@ taxiServer.post("/", (req, res) => {
   res.status(200).send("POST REQUEST received")
 })
 
-taxiServer.use("/", userRoutes)
-taxiServer.use("/vehicles", vehicleRoutes)
-taxiServer.use("/packages", packageRoutes)
-taxiServer.use("/bookings", bookingRoutes)
-taxiServer.use("/drivers", driverRoutes)
-taxiServer.use("/trips", tripRoutes)
-taxiServer.use("/places", placesRoutes)//external api of places list in booking form
-taxiServer.use("/cabtypes", cabTypeRoutes);
-taxiServer.use("/cabvehicles", cabVehicleRoutes);
-taxiServer.use("/states",stateRoutes)
-taxiServer.use("/city", cityRoutes)
-taxiServer.use("/place", placeRoute)
-taxiServer.use("/tariff", tariffRoutes)
-taxiServer.use("/citytariff", cityTariffRoutes)
-
 taxiServer.get("/webhook", (req, res) => {
   const VERIFY_TOKEN = "my_verify_token";
   const mode = req.query["hub.mode"];
@@ -105,12 +90,39 @@ taxiServer.post("/webhook", (req, res) => {
   res.sendStatus(200);
 });
 
+taxiServer.use("/", userRoutes)
+taxiServer.use("/vehicles", vehicleRoutes)
+taxiServer.use("/packages", packageRoutes)
+taxiServer.use("/bookings", bookingRoutes)
+taxiServer.use("/drivers", driverRoutes)
+taxiServer.use("/trips", tripRoutes)
+taxiServer.use("/places", placesRoutes)//external api of places list in booking form
+taxiServer.use("/cabtypes", cabTypeRoutes);
+taxiServer.use("/cabvehicles", cabVehicleRoutes);
+taxiServer.use("/states",stateRoutes)
+taxiServer.use("/city", cityRoutes)
+taxiServer.use("/place", placeRoute)
+taxiServer.use("/tariff", tariffRoutes)
+taxiServer.use("/citytariff", cityTariffRoutes)
+
+
+
 
 
 // Error handling middleware
 taxiServer.use((req, res) => {
   res.status(404).json({ message: "Route not found" })
 })
+
+// Add this after your other middleware
+taxiServer.use((error, req, res, next) => {
+    console.error('Server Error:', error);
+    res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+});
 
 const PORT = process.env.PORT || 5000
 taxiServer.listen(PORT, () => {

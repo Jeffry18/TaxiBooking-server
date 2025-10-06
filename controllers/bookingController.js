@@ -1,6 +1,6 @@
 const Booking = require("../models/booking");
-const User = require("../models/userModel");
-const { sendWhatsAppMessage } = require("../controllers/whatsappController");
+const { sendWhatsAppMessage } = require("./whatsappController");
+const { sendBookingEmail } = require("./nodemailerController");
 
 // Get bookings
 exports.getBookings = async (req, res) => {
@@ -60,10 +60,7 @@ exports.addBooking = async (req, res) => {
     }
 
     // ✅ userId comes from middleware
-    
-
     const newBooking = new Booking({
-      
       cabType,
       pickup,
       drop,
@@ -75,7 +72,6 @@ exports.addBooking = async (req, res) => {
       // tripType,
       //airportTripType: tripType === "airport" ? airportTripType : null,
       extraStops: extraStops || [],
-      
     });
 
     console.log("New Booking:", newBooking);
@@ -99,6 +95,13 @@ exports.addBooking = async (req, res) => {
       extraStops: populatedBooking.extraStops || [],
       phoneNumber: populatedBooking.phoneNumber,
     });
+
+    // Send email notification
+    // try {
+    //   await sendBookingEmail(req.body);
+    // } catch (emailError) {
+    //   console.error("Email notification failed:", emailError);
+    // }
 
     console.log("done");
 
