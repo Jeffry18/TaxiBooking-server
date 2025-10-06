@@ -72,7 +72,7 @@ taxiServer.post("/", (req, res) => {
 })
 
 taxiServer.get("/webhook", (req, res) => {
-  const VERIFY_TOKEN = "my_verify_token";
+  const VERIFY_TOKEN = "flymallu";
   const mode = req.query["hub.mode"];
   const token = req.query["hub.verify_token"];
   const challenge = req.query["hub.challenge"];
