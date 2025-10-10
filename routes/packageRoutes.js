@@ -13,7 +13,7 @@ router.get("/:id", packageController.getPackageById);
 router.post("/", upload.single("image"), packageController.createPackage);
 
 // ✅ PATCH (update package details)
-router.patch("/:id", packageController.updatePackage);
+router.put("/:id", upload.single("image"), packageController.updatePackage);
 
 // ✅ DELETE package
 router.delete("/:id", packageController.deletePackage);

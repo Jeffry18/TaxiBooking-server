@@ -14,4 +14,7 @@ router.get("/:id", stateController.getStateById);
 // Delete a state
 router.delete("/:id", stateController.deleteState);
 
+// Update a state
+router.put("/:id", upload.single("image"), stateController.updateState);
+
 module.exports = router;

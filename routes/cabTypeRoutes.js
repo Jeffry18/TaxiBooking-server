@@ -10,7 +10,7 @@ router.get("/", cabTypeController.getCabTypes);
 router.post("/", upload.single("image"), cabTypeController.createCabType);
 
 // ✅ PATCH (update cab type)
-router.patch("/:id", cabTypeController.updateCabType);
+router.patch("/:id",upload.single("image"), cabTypeController.updateCabType);
 
 // ✅ DELETE cab type
 router.delete("/:id", cabTypeController.deleteCabType);

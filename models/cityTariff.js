@@ -18,6 +18,11 @@ const cityTariffSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  details: {
+    type: String,
+    required: true,
+    trim: true,
+  },
   allowedKm: {
     type: Number,
     required: true,

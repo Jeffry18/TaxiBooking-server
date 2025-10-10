@@ -46,6 +46,26 @@ exports.getCabVehicles = async (req, res) => {
   }
 };
 
+// Update a vehicle
+exports.updateCabVehicle = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { cabTypeName, modelName, capacity, pricePerKm } = req.body;
+    const image = req.file ? req.file.filename : null;
+    const updateData = { cabTypeName, modelName, capacity, pricePerKm };
+    if (image) updateData.image = image;
+    
+    const vehicle = await VehicleModel.findByIdAndUpdate(id, updateData, { new: true });
+    if (!vehicle) {
+      return res.status(404).json({ message: "Vehicle not found" });
+    }
+    res.status(200).json(vehicle);
+  } catch (error) {
+    console.error("Update vehicle error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 // Delete a vehicle
 exports.deleteCabVehicle = async (req, res) => {
   try {

@@ -44,21 +44,43 @@ const createPackage = async (req, res) => {
   }
 };
 
+//update a package by id
 const updatePackage = async (req, res) => {
   try {
-    const updatedPackage = await Package.findByIdAndUpdate(
-      req.params.id,
-      { $set: req.body },
-      { new: true, runValidators: true }
-    );
+    const packageData = { ...req.body };
 
-    if (!updatedPackage) {
-      return res.status(404).json({ message: "Package not found" });
+    // If a new file was uploaded, delete the old image file (if any)
+    if (req.file) {
+      // Find existing package to know old image filename
+      const existing = await Package.findById(req.params.id);
+      if (existing && existing.image) {
+        const oldImagePath = path.join(__dirname, "..", "uploads", existing.image);
+        fs.unlink(oldImagePath, (err) => {
+          if (err) {
+            // Log error but continue - deletion failure should not block update
+            console.error("Failed to delete old package image:", err.message);
+          } else {
+            console.log("Old package image deleted:", existing.image);
+          }
+        });
+      }
+
+      packageData.image = req.file.filename; // Update image to new filename
+      console.log('Package image uploaded successfully, filename:', req.file.filename);
+    } else {
+      console.log('No new package image uploaded');
     }
 
-    res.json(updatedPackage);
-  } catch (err) {
-    res.status(400).json({ message: "Error updating package", error: err.message });
+    const updated = await Package.findByIdAndUpdate(req.params.id, packageData, { new: true });
+    if (!updated) {
+      return res.status(404).json({ message: "Package not found" });
+    }
+    console.log('Package updated successfully:', updated);
+    return res.json(updated);
+  }
+  catch (err) {
+    console.error('Error updating package:', err);
+    return res.status(400).json({ message: "Error updating package", error: err.message });
   }
 };
 

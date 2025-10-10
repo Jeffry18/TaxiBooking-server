@@ -1,12 +1,16 @@
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: 'santos.travel',   // from cPanel info
+  port: 465,                    // 465 for SSL, or 587 for TLS
+  secure: true,                 // true for 465, false for 587
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_APP_PASSWORD,
+    user: process.env.EMAIL_USER, // from cPanel
+    pass: process.env.EMAIL_PASS, // same as in cPanel
   },
 });
+
+console.log("Nodemailer transporter configured:", transporter.options);
 
 
 
@@ -34,7 +38,7 @@ const sendBookingEmail = async (bookingData) => {
     
 
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: '"FlyMallu" <' + process.env.EMAIL_USER + '>', // sender address
       to: process.env.ADMIN_MAIL,
       subject: "New Taxi Booking Request",
       html: emailContent,

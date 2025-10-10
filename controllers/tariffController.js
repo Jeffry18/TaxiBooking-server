@@ -21,6 +21,17 @@ exports.getTariffs = async (req, res) => {
   }
 };
 
+// Update tariff
+exports.updateTariff = async (req, res) => {
+  try {
+    const updatedTariff = await Tariff.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updatedTariff) return res.status(404).json({ message: "Tariff not found" });
+    res.json(updatedTariff);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 
 
 // Delete tariff

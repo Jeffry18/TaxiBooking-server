@@ -39,7 +39,7 @@ exports.getTrips = async (req, res) => {
     const trips = await Trip.find(query)
       .populate("packageId", "name description duration price image")
       .sort({ date: 1 }); // optional: upcoming trips first
-      console.log("Trips fetched:", trips);
+      console.log("Trips fetched");
     res.json({
       success: true,
       data: trips,

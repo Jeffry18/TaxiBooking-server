@@ -20,6 +20,8 @@ const storage = multer.diskStorage({
   },
 });
 
+console.log(uploadDir);
+
 // File filter (optional, only allow images)
 const fileFilter = (req, file, cb) => {
   if (file.mimetype.startsWith("image/")) {

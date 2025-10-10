@@ -9,6 +9,9 @@ router.post("/", upload.single("image"), cabVehicleController.addCabVehicle);
 // Get all vehicles
 router.get("/", cabVehicleController.getCabVehicles);
 
+// Update vehicle (with image upload)
+router.put("/:id", upload.single("image"), cabVehicleController.updateCabVehicle);
+
 // Delete vehicle
 router.delete("/:id", cabVehicleController.deleteCabVehicle);
 

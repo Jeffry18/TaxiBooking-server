@@ -35,9 +35,29 @@ const createCabType = async (req, res) => {
 // Update cab type
 const updateCabType = async (req, res) => {
   try {
-    const updated = await CabType.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
-    if (!updated) return res.status(404).json({ message: "Cab type not found" });
-    res.json(updated);
+    const cabType = await CabType.findById(req.params.id);
+    if (!cabType) {
+      return res.status(404).json({ message: "Cab type not found" });
+    }
+    // If new image uploaded, delete old image file
+    if (req.file && cabType.image) {
+      const oldImagePath = path.join(__dirname, "..", "uploads", cabType.image);
+      fs.unlink(oldImagePath, (err) => {
+        if (err) {
+          console.error("Error deleting old cab type image:", err.message);
+        }
+      });
+    }
+    const updatedData = { ...req.body };
+    if (req.file) {
+      updatedData.image = req.file.filename; // update with new image filename
+    }
+    const updatedCabType = await CabType.findByIdAndUpdate(
+      req.params.id,
+      updatedData,
+      { new: true }
+    );
+    res.json(updatedCabType);
   } catch (err) {
     res.status(400).json({ message: "Error updating cab type", error: err.message });
   }
