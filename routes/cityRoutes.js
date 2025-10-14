@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const upload = require("../middlewares/multterMiddleware"); // your multer config
+const { uploadSingle } = require("../middlewares/multterMiddleware"); // your multer config
 const cityController = require("../controllers/cityController");
 
 // Add City (with image)
-router.post("/", upload.single("image"), cityController.addCity);
+router.post("/", uploadSingle("image"), cityController.addCity);
 
 // Get all Cities
 router.get("/", cityController.getCities);
@@ -13,7 +13,7 @@ router.get("/", cityController.getCities);
 router.get("/:id", cityController.getCityById);
 
 // Update City (with new image optional)
-router.put("/:id", upload.single("image"), cityController.updateCity);
+router.put("/:id", uploadSingle("image"), cityController.updateCity);
 
 // Delete City
 router.delete("/:id", cityController.deleteCity);

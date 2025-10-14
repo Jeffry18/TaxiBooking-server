@@ -11,7 +11,7 @@ if (!fs.existsSync(uploadDir)) {
 // Configure storage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, uploadDir); // store in /uploads
+    cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
@@ -20,21 +20,58 @@ const storage = multer.diskStorage({
   },
 });
 
-console.log(uploadDir);
-
-// File filter (optional, only allow images)
+// File filter for images and PDFs
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith("image/")) {
+  const allowedMimeTypes = ["image/jpeg", "image/png", "image/jpg", "application/pdf"];
+  if (allowedMimeTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error("Only image files are allowed"), false);
+    cb(new Error("Only images (JPG, PNG) and PDFs are allowed"), false);
   }
 };
 
+// Create multer instance
 const upload = multer({
   storage,
   fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 }, // max 5MB
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB max per file
+    files: 10
+  }
 });
 
-module.exports = upload;
+// Middleware for single file
+const uploadSingle = (fieldName) => {
+  return (req, res, next) => {
+    upload.single(fieldName)(req, res, (err) => {
+      if (err) return res.status(400).json({ message: err.message });
+      next();
+    });
+  };
+};
+
+// Middleware for multiple files
+const uploadMultiple = (fieldName, maxCount = 10) => {
+  return (req, res, next) => {
+    upload.array(fieldName, maxCount)(req, res, (err) => {
+      if (err) return res.status(400).json({ message: err.message });
+      next();
+    });
+  };
+};
+
+// Middleware for multiple fields
+const uploadFields = (fields) => {
+  return (req, res, next) => {
+    upload.fields(fields)(req, res, (err) => {
+      if (err) return res.status(400).json({ message: err.message });
+      next();
+    });
+  };
+};
+
+module.exports = {
+  uploadSingle,
+  uploadMultiple,
+  uploadFields
+};

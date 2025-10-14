@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const driverController = require("../controllers/driverController");
-const upload = require("../middlewares/multterMiddleware");
+const { uploadSingle } = require("../middlewares/multterMiddleware");
 const jwtMiddleware = require("../middlewares/jwtMiddleware");
 
 // ✅ GET all drivers
@@ -11,7 +11,7 @@ router.get("/",jwtMiddleware, driverController.getDrivers);
 router.get("/:id",jwtMiddleware, driverController.getDriverById);
 
 // ✅ POST new driver with image
-router.post("/",jwtMiddleware, upload.single("image"), driverController.createDriver);
+router.post("/",jwtMiddleware, uploadSingle("image"), driverController.createDriver);
 
 // ✅ PATCH (update driver)
 router.patch("/:id",jwtMiddleware, driverController.updateDriver);

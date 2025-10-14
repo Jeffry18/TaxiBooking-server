@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const packageController = require("../controllers/packageController");
-const upload = require("../middlewares/multterMiddleware");
+const { uploadSingle } = require("../middlewares/multterMiddleware");
 
 // ✅ GET all packages
 router.get("/", packageController.getPackages);
@@ -10,10 +10,10 @@ router.get("/", packageController.getPackages);
 router.get("/:id", packageController.getPackageById);
 
 // ✅ POST new package with image
-router.post("/", upload.single("image"), packageController.createPackage);
+router.post("/", uploadSingle("image"), packageController.createPackage);
 
 // ✅ PATCH (update package details)
-router.put("/:id", upload.single("image"), packageController.updatePackage);
+router.put("/:id", uploadSingle("image"), packageController.updatePackage);
 
 // ✅ DELETE package
 router.delete("/:id", packageController.deletePackage);

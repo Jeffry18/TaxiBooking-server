@@ -14,7 +14,8 @@ const vehicleSchema = new mongoose.Schema(
     type: { type: String, required: true },
     capacity: { type: Number, required: true },
     contactNumber: { type: String, required: true },
-    imageUrl: { type: String },
+    imageUrl: { type: String }, // Main image (for backward compatibility)
+    images: [{ type: String }], // Array of image filenames
     driver: { type: mongoose.Schema.Types.ObjectId, ref: "Driver" },
     status: {
       type: String,

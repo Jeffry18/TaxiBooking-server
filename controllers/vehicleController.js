@@ -40,16 +40,23 @@ const getVehicleById = async (req, res) => {
 
 const addVehicle = async (req, res) => {
   try {
-    // Handle file upload - multer adds file info to req.file
     const vehicleData = { ...req.body };
     if (req.userId) {
       vehicleData.user = req.userId;
     }
-    if (req.file) {
-      vehicleData.imageUrl = req.file.filename; // Store just the filename
-      console.log('File uploaded successfully, filename:', req.file.filename);
+
+    // Handle multiple file uploads
+    if (req.files && Array.isArray(req.files)) {
+      vehicleData.images = req.files.map(file => file.filename);
+      vehicleData.imageUrl = vehicleData.images[0]; // Set first image as main image for backward compatibility
+      console.log('Files uploaded successfully:', vehicleData.images);
+    } else if (req.file) {
+      // Handle single file upload for backward compatibility
+      vehicleData.imageUrl = req.file.filename;
+      vehicleData.images = [req.file.filename];
+      console.log('Single file uploaded successfully:', req.file.filename);
     } else {
-      console.log('No file uploaded');
+      console.log('No files uploaded');
     }
     
     const newVehicle = new Vehicle(vehicleData);
@@ -90,12 +97,18 @@ const deleteVehicle = async (req, res) => {
       return res.status(404).json({ error: "Vehicle not found" });
     }
 
-    // If vehicle has an image, delete it from uploads
-    if (vehicle.imageUrl) {
-      const imagePath = path.join(__dirname, "..", "uploads", vehicle.imageUrl);
+    // Delete all associated images
+    const imagesToDelete = vehicle.images || [];
+    if (vehicle.imageUrl && !imagesToDelete.includes(vehicle.imageUrl)) {
+      imagesToDelete.push(vehicle.imageUrl);
+    }
+
+    // Delete each image file
+    for (const filename of imagesToDelete) {
+      const imagePath = path.join(__dirname, "..", "uploads", filename);
       fs.unlink(imagePath, (err) => {
         if (err) {
-          console.error("Error deleting vehicle image:", err.message);
+          console.error(`Error deleting image ${filename}:`, err.message);
         }
       });
     }
