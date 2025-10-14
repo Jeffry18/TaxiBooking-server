@@ -32,7 +32,7 @@ const taxiServer = express()
 
 // Update CORS configuration
 taxiServer.use(cors({
-  origin: ['https://www.flymallu.com', 'https://flymallu.com'], // ❌ This allows anyone, not secure for production
+  origin: "*", // ❌ This allows anyone, not secure for production
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
