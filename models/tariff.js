@@ -20,6 +20,11 @@ const tariffSchema = new mongoose.Schema(
       type: Number,
       required: true, // e.g., 80 KM
     },
+    driverBata: {
+      type: Number,
+      required: false, // optional field for driver allowance
+      default: 0,
+    },
     extraKmRate: {
       type: Number,
       required: true, // rate per KM beyond allowedKm
@@ -28,6 +33,8 @@ const tariffSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+
+
   },
   { timestamps: true }
 );

@@ -31,6 +31,10 @@ const cityTariffSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+      outstation: {
+      type: String,
+      required: false,
+    },
 });
 
 module.exports = mongoose.model("CityTariff", cityTariffSchema);
