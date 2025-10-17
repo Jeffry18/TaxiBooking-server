@@ -1,7 +1,7 @@
 const { sendContactEmail } = require("./nodemailerController"); // your existing Nodemailer file
 
 // POST /api/contact
-const handleContactForm = async (req, res) => {
+exports.handleContactForm = async (req, res) => {
   try {
     const { name, email, subject, message } = req.body;
 
@@ -22,4 +22,4 @@ const handleContactForm = async (req, res) => {
   }
 };
 
-module.exports = { handleContactForm };
+

@@ -26,7 +26,7 @@ router.get("/status/:status", jwtMiddleware, getTripsByStatus);
 router.get("/:id", jwtMiddleware, getTripById);
 
 // Update trip status
-router.patch("/:id/status", jwtMiddleware, updateTripStatus);
+router.patch("/:id/status", updateTripStatus);
 
 // Update trip details
 router.put("/:id", jwtMiddleware, updateTrip);
