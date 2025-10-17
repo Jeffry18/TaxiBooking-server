@@ -88,4 +88,59 @@ const sendBookingEmail = async (bookingData) => {
   }
 };
 
-module.exports = { sendBookingEmail };
+// =============================
+// 📧 CONTACT FORM EMAIL FUNCTION
+// =============================
+const sendContactEmail = async (contactData) => {
+  try {
+    const { name, email, subject, message } = contactData;
+
+    if (!name || !email || !message) {
+      console.log("❌ Missing contact form fields");
+      return false;
+    }
+
+    // ✅ Notify Admin
+    const adminMailOptions = {
+      from: `"FlyMallu Contact Form" <${process.env.EMAIL_USER}>`,
+      to: process.env.ADMIN_MAIL,
+      subject: `📩 New Contact Message: ${subject || "No Subject"}`,
+      html: `
+        <h2>📨 New Contact Message</h2>
+        <p><b>Name:</b> ${name}</p>
+        <p><b>Email:</b> ${email}</p>
+        <p><b>Subject:</b> ${subject || "No subject"}</p>
+        <p><b>Message:</b><br>${message}</p>
+        <hr/>
+        <p>Sent from <strong>FlyMallu Contact Page</strong></p>
+      `,
+    };
+
+    await transporter.sendMail(adminMailOptions);
+    console.log("📧 Admin notified of new contact message");
+
+    // ✅ Auto-reply to user
+    const replyMailOptions = {
+      from: `"FlyMallu Support" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: "✅ Thank you for contacting FlyMallu!",
+      html: `
+        <h3>Hi ${name},</h3>
+        <p>Thank you for reaching out to <strong>FlyMallu Taxi Service</strong>.</p>
+        <p>We’ve received your message and will get back to you soon.</p>
+        <hr/>
+        <p><em>This is an automated reply — please do not reply directly.</em></p>
+      `,
+    };
+
+    await transporter.sendMail(replyMailOptions);
+    console.log("📩 Auto-reply sent to contact user");
+
+    return true;
+  } catch (error) {
+    console.error("❌ Contact email failed:", error);
+    return false;
+  }
+};
+
+module.exports = { sendBookingEmail, sendContactEmail };
