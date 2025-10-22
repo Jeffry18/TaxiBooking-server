@@ -25,10 +25,11 @@ const sendBookingEmail = async (bookingData) => {
     <li><strong>🏁 Drop:</strong> ${bookingData.drop}</li>
     <li><strong>🚖 Cab Type:</strong> ${bookingData.cabType?.name}</li>
     <li><strong>👥 Passengers:</strong> ${bookingData.passengerCount}</li>
-    <li><strong>📅 Date:</strong> ${bookingData.date}</li>
+    <li><strong>📅 Pickup Date:</strong> ${bookingData.date}</li>
+    <li><strong>📅 Return Date:</strong> ${bookingData.returnDate}</li>
     <li><strong>⏰ Time:</strong> ${bookingData.time}</li>
     <li><strong>🛑 Extra Stops:</strong> ${
-      bookingData.extraStops.length ? bookingData.extraStops.join(", ") : "None"
+      bookingData.extraStops.length ? bookingData.extraStops.join("; ") : "None"
     }</li>
 </ul>
 <p><strong>━━━━━━━━━━━━━━━━━━━━</strong></p>
@@ -61,7 +62,7 @@ const sendBookingEmail = async (bookingData) => {
     <li><strong>📅 Date:</strong> ${bookingData.date}</li>
     <li><strong>⏰ Time:</strong> ${bookingData.time}</li>
     <li><strong>🛑 Extra Stops:</strong> ${
-      bookingData.extraStops.length ? bookingData.extraStops.join(", ") : "None"
+      bookingData.extraStops.length ? bookingData.extraStops.join(";") : "None"
     }</li>
 </ul>
 

@@ -75,24 +75,7 @@ taxiServer.post("/", (req, res) => {
   res.status(200).send("POST REQUEST received")
 })
 
-taxiServer.get("/webhook", (req, res) => {
-  const VERIFY_TOKEN = "flymallu";
-  const mode = req.query["hub.mode"];
-  const token = req.query["hub.verify_token"];
-  const challenge = req.query["hub.challenge"];
 
-  if (mode === "subscribe" && token === VERIFY_TOKEN) {
-    console.log("✅ Webhook verified!");
-    res.status(200).send(challenge);
-  } else {
-    res.sendStatus(403);
-  }
-});
-
-taxiServer.post("/webhook", (req, res) => {
-  console.log("📩 Incoming WhatsApp webhook:", JSON.stringify(req.body, null, 2));
-  res.sendStatus(200);
-});
 
 taxiServer.use("/", userRoutes)
 taxiServer.use("/vehicles", vehicleRoutes)

@@ -94,6 +94,7 @@ exports.addBooking = async (req, res) => {
       cabType: populatedBooking.cabType?.name || "N/A",
       passengerCount: populatedBooking.passengerCount,
       date: populatedBooking.date,
+      returnDate: populatedBooking.returnDate,
       time: populatedBooking.time,
       extraStops: populatedBooking.extraStops || [],
       phoneNumber: populatedBooking.phoneNumber,
