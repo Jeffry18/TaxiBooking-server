@@ -7,7 +7,7 @@ const tripSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    required: true
+    required: false
   },
   name: {
     type: String,
@@ -56,6 +56,10 @@ const tripSchema = new mongoose.Schema({
   },
   packagePrice: {
     type: Number,
+    required: true
+  },
+  packageDestination: {
+    type: String,
     required: true
   },
 

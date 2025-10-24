@@ -74,7 +74,7 @@ const sendBookingEmail = async (bookingData) => {
     if (bookingData.email) {
       const customerMailOptions = {
         from: `"FlyMallu" <${process.env.EMAIL_USER}>`,
-        to: "bookingData.email", // customer's email from form
+        to: bookingData.email , // customer's email from form
         subject: "✅ Booking Confirmation - FlyMallu Taxi",
         html: customerEmailContent,
       };
@@ -144,4 +144,47 @@ const sendContactEmail = async (contactData) => {
   }
 };
 
-module.exports = { sendBookingEmail, sendContactEmail };
+// =============================
+// 📧 TRIP BOOKING EMAIL FUNCTION
+// =============================
+
+const sendTripEmail = async (tripData) => {
+  try {
+    const emailContent = `
+<h2>📢 New Trip Booking</h2>
+<p><strong>━━━━━━━━━━━━━━━━━━━━</strong></p>
+<ul>
+        <li><strong>👤 Name:</strong> ${tripData.name}</li>
+        <li><strong>📞 Phone:</strong> ${tripData.phone}</li>
+        <li><strong>📧 Email:</strong> ${tripData.email}</li>
+        <li><strong>🧳 Package:</strong> ${tripData.packageName}</li>
+        <li><strong>💰 Price:</strong> ₹${tripData.packagePrice}</li>
+        <li><strong>📍 Destination:</strong> ${tripData.packageDestination}</li>
+        <li><strong>👥 Passengers:</strong> ${tripData.passengers}</li>
+        <li><strong>📅 Date:</strong> ${tripData.date}</li>
+        <li><strong>⏰ Time:</strong> ${tripData.time}</li>
+        ${
+          tripData.specialRequests
+            ? `<li><strong>📝 Special Requests:</strong> ${tripData.specialRequests}</li>`
+            : ""
+        }
+      </ul>
+<p><strong>━━━━━━━━━━━━━━━━━━━━</strong></p>
+        `;
+    const mailOptions = {
+      from: '"FlyMallu" <' + process.env.EMAIL_USER + ">", // sender address
+      to: process.env.ADMIN_MAIL,
+      subject: "New Trip Booking Request",
+      html: emailContent,
+    };
+    const info = await transporter.sendMail(mailOptions);
+    console.log("📧 Trip Booking Email sent successfully:", info.messageId);
+    return true;
+  } catch (error) {
+    console.error("❌ Trip Booking Email sending failed:", error);
+    return false;
+  }
+};
+
+
+module.exports = { sendBookingEmail, sendContactEmail, sendTripEmail };
